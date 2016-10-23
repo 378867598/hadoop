@@ -1,0 +1,38 @@
+port <%= @port %>
+daemonize yes 
+pidfile <%= @redis_data_dir %>/run/<%= @domain_name %>.pid
+timeout 0
+<% if @enablelog == "true" %>
+loglevel verbose
+logfile <%= @redis_data_dir %>/logs/<%= @domain_name %>.log
+<% end -%>
+databases 1
+<% if @persistent == "true" -%>
+save 7200 2000000
+<% end -%>
+rdbcompression yes
+protected-mode no
+dbfilename <%= @domain_name %>.rdb
+dir <%= @redis_data_dir %>/data/
+slave-serve-stale-data yes
+appendonly no
+appendfsync no
+no-appendfsync-on-rewrite yes
+auto-aof-rewrite-percentage 100
+auto-aof-rewrite-min-size 64mb
+slowlog-log-slower-than 10000
+slowlog-max-len 128
+hash-max-ziplist-entries 512
+hash-max-ziplist-value 64
+list-max-ziplist-entries 512
+list-max-ziplist-value 64
+set-max-intset-entries 512
+zset-max-ziplist-entries 128
+zset-max-ziplist-value 64
+activerehashing yes
+maxmemory <%= @maxmemory %>mb
+maxmemory-policy allkeys-lru
+<% if @enableslave == true -%>
+slaveof <%= @master_ip %> <%= @port %>
+<% end %>
+bind 0.0.0.0
